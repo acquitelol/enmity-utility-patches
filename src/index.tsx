@@ -1,29 +1,36 @@
-import { Plugin, registerPlugin } from 'enmity/managers/plugins';
-import { React } from 'enmity/metro/common';
-import { getByProps } from 'enmity/metro';
-import { create } from 'enmity/patcher';
-import manifest from '../manifest.json';
+import { Plugin, registerPlugin } from "enmity/managers/plugins";
+import Manifest from "../manifest.json";
+import { getByProps, getModule } from "enmity/modules";
+import { create } from "enmity/patcher";
+import { code_block } from "./utils";
 
-import Settings from './components/Settings';
+const MessagesModule = getByProps("sendMessage");
+const UploadsModule = getByProps("uploadLocalFiles");
 
-const Typing = getByProps('startTyping');
-const Patcher = create('silent-typing');
+const Patcher = create("[BetterCodeBlocks]");
 
-const SilentTyping: Plugin = {
-   ...manifest,
+const BetterCodeBlocks: Plugin = {
+  ...Manifest,
+  patches: [],
 
-   onStart() {
-      Patcher.instead(Typing, 'startTyping', () => { });
-      Patcher.instead(Typing, 'stopTyping', () => { });
-   },
+  onStart() {
 
-   onStop() {
-      Patcher.unpatchAll();
-   },
+    Patcher.before(MessagesModule, "sendMessage", (_, args, __) => {
+      const content = args[1]["content"];
+      const code = content.match(/[```].*[\s\S]*?(?=\n.*?=|$)/);
+      code.replaceAll(/```.*/, '')
+      const final_image = code_block(code) 
+      console.log(final_image)
+    });
 
-   getSettingsPanel({ settings }) {
-      return <Settings settings={settings} />;
-   }
-};
+    Patcher.before(UploadsModule, "uploadLocalFiles", (_, args, __) => {
+      args[3].content = args[3].content.replaceAll("media.discordapp.net", "cdn.discordapp.com")
+    });
+  },
 
-registerPlugin(SilentTyping);
+  onStop() {
+    Patcher.unpatchAll()
+  }
+}
+
+registerPlugin(BetterCodeBlocks);

@@ -26,6 +26,11 @@
       "esbuild-windows-64": "^0.14.21"
    },
    "dependencies": {
-      "enmity": "*"
+      "carbon-cli": "^1.0.3",
+      "cheerio": "^1.0.0-rc.12",
+      "enmity": "*",
+      "highlight.js": "^11.6.0",
+      "js-beautify": "^1.14.7",
+      "webshot": "^0.18.0"
    }
 }

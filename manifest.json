@@ -1,11 +1,12 @@
 {
-   "name": "SilentTyping",
-   "version": "1.0.0",
-   "description": "Silences your typing indicator.",
+   "name": "BetterCodeBlocks",
+   "version": "1.0.1",
+   "channel": "development",
+   "description": "Sends code as images.",
    "authors": [
       {
-         "name": "eternal",
-         "id": "263689920210534400"
+         "name": "acquite",
+         "id": "581573474296791211"
       }
    ]
 }
