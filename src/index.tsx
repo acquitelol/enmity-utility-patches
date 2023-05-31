@@ -1,36 +1,81 @@
-import { Plugin, registerPlugin } from "enmity/managers/plugins";
-import Manifest from "../manifest.json";
-import { getByProps, getModule } from "enmity/modules";
-import { create } from "enmity/patcher";
-import { code_block } from "./utils";
+import { Plugin, registerPlugin } from 'enmity/managers/plugins';
+import Settings from "./Settings";
+import { create } from 'enmity/patcher';
+import manifest from '../manifest.json';
+import { getByName, getByProps } from 'enmity/metro';
+import { findInReactTree } from 'enmity/utilities';
+import { React } from 'enmity/metro/common';
+import { get, init } from './store';
 
-const MessagesModule = getByProps("sendMessage");
-const UploadsModule = getByProps("uploadLocalFiles");
+const Patcher = create('utils');
+const { NativeModules: { DCDChatManager } } = getByProps("View", "Text", "NativeModules");
+const FormLabel = getByName("FormLabel", { default: false });
+const { Text } = getByProps("TextStyleSheet");
+const { getSettingTitle } = getByProps("getSettingTitle");
+const SettingsOverviewScreen = getByName("SettingsOverviewScreen", { default: false });
+const FilesManager = getByProps("addFiles", "popFirstFile");
+const MediaItemManager = getByProps("getNumMediaItemsPerRow");
 
-const Patcher = create("[BetterCodeBlocks]");
+const AddRoleDot: Plugin = {
+    ...manifest,
 
-const BetterCodeBlocks: Plugin = {
-  ...Manifest,
-  patches: [],
+    onStart() {
+        init();
 
-  onStart() {
+        Patcher.before(DCDChatManager, "updateRows", (_, args) => {
+            if (!get("roleDot")) return;
+            const rows = JSON.parse(args[1]);
 
-    Patcher.before(MessagesModule, "sendMessage", (_, args, __) => {
-      const content = args[1]["content"];
-      const code = content.match(/[```].*[\s\S]*?(?=\n.*?=|$)/);
-      code.replaceAll(/```.*/, '')
-      const final_image = code_block(code) 
-      console.log(final_image)
-    });
+            for (const row of rows) {
+                if (row.type === 1) {
+                    row.message.shouldShowRoleDot = true
+                    row.message.shouldShowRoleOnName = true
+                }
+            }
 
-    Patcher.before(UploadsModule, "uploadLocalFiles", (_, args, __) => {
-      args[3].content = args[3].content.replaceAll("media.discordapp.net", "cdn.discordapp.com")
-    });
-  },
+            args[1] = JSON.stringify(rows);
+        });
 
-  onStop() {
-    Patcher.unpatchAll()
-  }
-}
+        Patcher.after(FormLabel, "default", (_, __, res) => {
+            if (!get("headerPrimary")) return;
+            res.props.color = "text-normal";
+        })
 
-registerPlugin(BetterCodeBlocks);
+        const unpatch = Patcher.after(SettingsOverviewScreen, "default", (_, __, res) => {
+            unpatch();
+
+            const { sections }: { sections: any[] } = findInReactTree(res, r => r.sections);
+            const settings = sections
+                .map(section => section.settings)
+                .reduce((acc, obj) => [...acc, ...obj], [])
+                .map(setting => getSettingTitle(setting))
+
+            Patcher.before(Text, "render", (_, args) => {
+                if (!get("headerPrimary")) return;
+
+                if (args[0].variant === "text-md/semibold" 
+                    && args[0].color === "header-primary"
+                    && settings.includes(args[0].children)
+                ) args[0].color = "text-normal";
+            })
+        });
+
+        Patcher.instead(MediaItemManager, "getNumMediaItemsPerRow", (self, args, orig) => get("mediaItems") ? orig.apply(self, args) : 2);
+        Patcher.after(FilesManager, "addFiles", (_, args) => {
+            if (!get("jsonFix")) return;
+            args[0].files.forEach((file) => {
+                file.mimeType === "application/json" && (file.mimeType = "text/plain")
+            })
+        })
+   },
+
+    onStop() {
+        Patcher.unpatchAll();
+    },
+
+    getSettingsPanel() {
+        return <Settings />
+    }
+};
+
+registerPlugin(AddRoleDot);
