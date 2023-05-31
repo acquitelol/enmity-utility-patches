@@ -10,11 +10,11 @@ export const set = (prop: keyof typeof patchMap, value: boolean) => _set(manifes
 export const patchMap = {
     roleDot: [
         "Add Role Dots",
-        "Force-enables role dots along with role colors no matter disregarding your accessibility settings"
+        "Force-enables role-dots aswell with role-colors simultaneously disregarding your accessibility settings."
     ],
     headerPrimary: [
         "Fix Text Labels",
-        "Makes all SettingRow and FormLabel main text labels use 'text-normal' instead of 'header-primary'."
+        "Forces all SettingRow and FormLabel Main text-labels use the 'text-normal' color instead of 'header-primary'."
     ],
     mediaItems: [
         "Media Items",
@@ -22,13 +22,11 @@ export const patchMap = {
     ],
     jsonFix: [
         "Upload JSON Files",
-        "Fixes a long bug of Discord where JSON files couldn't be uploaded by changing the file's 'Mime-Type'."
+        "Fixes a long-lasting bug of Discord (where JSON files couldn't be uploaded) by changing the file's 'Mime-Type'."
     ]
 }
 
-export const assignExisting = (prop: string) => {
+export const assignExisting = (prop: keyof typeof patchMap) => {
     const settings = _get(manifest.name, "settings", {}) as Record<string, boolean>;
-    (settings[prop] === undefined) && _set(manifest.name, "settings", { ...settings, [prop]: true }); 
+    (settings[prop] === undefined) && set(prop, true); 
 }
-
-export const init = () => Object.keys(patchMap).forEach(prop => assignExisting(prop));
