@@ -10,19 +10,19 @@ export const set = (prop: keyof typeof patchMap, value: boolean) => _set(manifes
 export const patchMap = {
     roleDot: [
         "Add Role Dots",
-        "Force-enables role dots no matter what your accessibilty settings"
+        "Force-enables role dots along with role colors no matter disregarding your accessibility settings"
     ],
     headerPrimary: [
         "Fix Text Labels",
-        "Makes all SettingRow text labels use text-normal instead of header-primary"
+        "Makes all SettingRow and FormLabel main text labels use 'text-normal' instead of 'header-primary'."
     ],
     mediaItems: [
         "Media Items",
-        "Changes the amount of media items per row to 2 instead of the default 3"
+        "Changes the amount of media items per row to '2' instead of the default '3' in new Media Picker experiment."
     ],
     jsonFix: [
         "Upload JSON Files",
-        "Fixes a long bug of Discord where JSON files couldn't be uploaded"
+        "Fixes a long bug of Discord where JSON files couldn't be uploaded by changing the file's 'Mime-Type'."
     ]
 }
 
