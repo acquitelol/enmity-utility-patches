@@ -60,7 +60,7 @@ const AddRoleDot: Plugin = {
             })
         });
 
-        Patcher.instead(MediaItemManager, "getNumMediaItemsPerRow", (self, args, orig) => get("mediaItems") ? orig.apply(self, args) : 2);
+        Patcher.instead(MediaItemManager, "getNumMediaItemsPerRow", (self, args, orig) => get("mediaItems") ? 2 : orig.apply(self, args));
         Patcher.after(FilesManager, "addFiles", (_, args) => {
             if (!get("jsonFix")) return;
             args[0].files.forEach((file) => {
