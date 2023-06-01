@@ -16,7 +16,7 @@ export default () => {
                         subLabel={typeof subtitle === "function" ? subtitle?.() : subtitle}
                         leading={icon && <FormRow.Icon source={getIDByName(icon)} />}
                         trailing={() => <FormSwitch
-                            value={get(patch as keyof typeof patchMap)}
+                            value={get(patch as keyof typeof patchMap) ?? true}
                             onValueChange={(value: boolean) => set(patch as keyof typeof patchMap, value)}
                         />}
                         disabled={disabled}

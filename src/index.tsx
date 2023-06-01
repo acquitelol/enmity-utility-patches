@@ -5,8 +5,7 @@ import manifest from '../manifest.json';
 import { getByName, getByProps } from 'enmity/metro';
 import { findInReactTree } from 'enmity/utilities';
 import { React, Users } from 'enmity/metro/common';
-import { assignExisting, get, patchMap } from './store';
-import { get as _get } from 'enmity/api/settings';
+import { set, get, patchMap } from './store';
 
 const Patcher = create('utils');
 const { NativeModules: { DCDChatManager } } = getByProps("View", "Text", "NativeModules");
@@ -22,7 +21,7 @@ const AddRoleDot: Plugin = {
     ...manifest,
 
     onStart() {
-        Object.keys(patchMap).forEach(prop => assignExisting(prop as keyof typeof patchMap));
+        Object.keys(patchMap).forEach(prop => (get(prop) === undefined) && set(prop, true));
 
         Patcher.before(DCDChatManager, "updateRows", (_, args) => {
             if (!get("roleDot")) return;
@@ -65,7 +64,7 @@ const AddRoleDot: Plugin = {
         });
 
         Patcher.instead(MediaItemManager, "getNumMediaItemsPerRow", (self, args, orig) => get("mediaItems") 
-            ? _get(manifest.name, "mediaItemsNumber", 2)
+            ? get("mediaItemsNumber", 2)
             : orig.apply(self, args));
 
         Patcher.after(FilesManager, "addFiles", (_, args) => {
@@ -78,7 +77,7 @@ const AddRoleDot: Plugin = {
 
         Patcher.after(Profile, "getUserProfile", (_, args, res) => {
             if (args[0] !== Users.getCurrentUser().id || !get("pronouns")) return;
-            res.pronouns ||= _get(manifest.name, "pronouns", "unspecified");
+            res.pronouns ||= get("pronouns", "unspecified");
         })
    },
 

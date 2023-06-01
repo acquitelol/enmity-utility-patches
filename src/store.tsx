@@ -4,11 +4,8 @@ import manifest from '../manifest.json';
 import { Serializable, get as _get, set as _set } from 'enmity/api/settings';
 import { FormInput, View } from 'enmity/components';
 
-export const get = (prop: keyof typeof patchMap) => (_get(manifest.name, "settings", {}) as Record<string, boolean>)[prop]
-export const set = (prop: keyof typeof patchMap, value: Serializable) => _set(manifest.name, "settings", { 
-    ..._get(manifest.name, "settings", {}) as Record<string, boolean>, 
-    [prop]: value 
-});
+export const get = (prop: string, defaultValue?: Serializable) => _get(manifest.name, prop, defaultValue)
+export const set = (prop: string, value: Serializable) => _set(manifest.name, prop, value);
 
 export type PatchType = {
     title: (() => string) | string;
@@ -28,15 +25,15 @@ export const patchMap = {
         subtitle: "Forces all Text Labels use the 'text-normal' color instead of the default 'header-primary'.",
         icon: "ic_add_text"
     },
-    pronouns: {
+    earlyPronouns: {
         title: "Early Pronouns",
-        subtitle: () => `Set your own pronouns to ${_get(manifest.name, "pronouns", "unspecified")}. Keep in mind others will not be able to see this.`,
+        subtitle: () => `Set your own pronouns to ${get("pronouns", "unspecified")}. Keep in mind others will not be able to see this.`,
         icon: "ic_accessibility_24px",
         custom: (disabled) => {
             return <FormInput 
                 placeholder="Your pronouns go here"
                 title="Pronouns"
-                value={_get(manifest.name, "pronouns", "unspecified")}
+                value={get("pronouns", "unspecified")}
                 onChange={value => _set(manifest.name, "pronouns", value)}
                 disabled={disabled}
                 style={{ marginTop: -16 }}
@@ -45,7 +42,7 @@ export const patchMap = {
     },
     mediaItems: {
         title: "Media Items",
-        subtitle: () => `Changes the amount of media items per row in media picker to '${_get(manifest.name, "mediaItemsNumber", 2)}' instead of the default '3'.`,
+        subtitle: () => `Changes the amount of media items per row in media picker to '${get("mediaItemsNumber", 2)}' instead of the default '3'.`,
         icon: "ic_image",
         custom: (disabled) => {
             const SliderComponent = getModule(x => x.render.name === "SliderComponent");
@@ -67,7 +64,7 @@ export const patchMap = {
             return <View style={{ alignItems: "center", flexDirection: "row" }}>
                 {renderLabel(minimum)}
                 <SliderComponent 
-                    value={_get(manifest.name, "mediaItemsNumber", 2)}
+                    value={get("mediaItemsNumber", 2)}
                     minimumValue={minimum}
                     maximumValue={maximum}
                     style={{ flex: 1 }}
@@ -89,8 +86,3 @@ export const patchMap = {
         icon: "icon-qs-files"
     }
 };
-
-export const assignExisting = (prop: keyof typeof patchMap) => {
-    const settings = _get(manifest.name, "settings", {}) as Record<string, boolean>;
-    (settings[prop] === undefined) && set(prop, true); 
-}
