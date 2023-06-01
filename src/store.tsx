@@ -2,7 +2,7 @@ import { getByName, getByProps, getModule } from 'enmity/metro';
 import { Constants, React, Theme } from 'enmity/metro/common';
 import manifest from '../manifest.json';
 import { Serializable, get as _get, set as _set } from 'enmity/api/settings';
-import { View } from 'enmity/components';
+import { FormInput, View } from 'enmity/components';
 
 export const get = (prop: keyof typeof patchMap) => (_get(manifest.name, "settings", {}) as Record<string, boolean>)[prop]
 export const set = (prop: keyof typeof patchMap, value: Serializable) => _set(manifest.name, "settings", { 
@@ -10,18 +10,41 @@ export const set = (prop: keyof typeof patchMap, value: Serializable) => _set(ma
     [prop]: value 
 });
 
+export type PatchType = {
+    title: (() => string) | string;
+    subtitle: (() => string) | string;
+    icon?: string;
+    custom?: (disabled: boolean) => any
+}
+
 export const patchMap = {
     roleDot: {
         title: "Add Role Dots",
-        subtitle: "Force-enables role-dots aswell with role-colors simultaneously disregarding your accessibility settings.",
+        subtitle: "Force-enables role-dots aswell as role-colors disregarding your accessibility settings.",
+        icon: "ic_members"
     },
     headerPrimary: {
         title: "Fix Text Labels",
-        subtitle: "Forces all SettingRow and FormLabel Main text-labels use the 'text-normal' color instead of 'header-primary'."
+        subtitle: "Forces all Text Labels use the 'text-normal' color instead of the default 'header-primary'.",
+        icon: "ic_add_text"
+    },
+    pronouns: {
+        title: "Early Pronouns",
+        subtitle: () => `Set your own pronouns to ${_get(manifest.name, "pronouns", "unspecified")}. Keep in mind others will not be able to see this.`,
+        icon: "ic_accessibility_24px",
+        custom: (disabled) => {
+            return <FormInput 
+                placeholder="Your pronouns go here"
+                title="Pronouns"
+                value={_get(manifest.name, "pronouns", "unspecified")}
+                onChange={value => _set(manifest.name, "pronouns", value)}
+            />
+        }
     },
     mediaItems: {
         title: "Media Items",
-        subtitle: () => `Changes the amount of media items per row to '${_get(manifest.name, "mediaItemsNumber", 2)}' instead of the default '3' in new Media Picker experiment.`,
+        subtitle: () => `Changes the amount of media items per row in media picker to '${_get(manifest.name, "mediaItemsNumber", 2)}' instead of the default '3'.`,
+        icon: "ic_image",
         custom: (disabled) => {
             const SliderComponent = getModule(x => x.render.name === "SliderComponent");
             const FormLabel = getByName("FormLabel");
@@ -31,7 +54,7 @@ export const patchMap = {
             const renderLabel = (text: number | string) => <FormLabel 
                 text={text} 
                 style={{ 
-                    marginHorizontal: 16,
+                    marginHorizontal: 24,
                     opacity: disabled ? 0.5 : 1
                 }}
             />
@@ -60,13 +83,8 @@ export const patchMap = {
     },
     jsonFix: {
         title: "Upload JSON Files",
-        subtitle: "Fixes a long-lasting bug of Discord (where JSON files couldn't be uploaded) by changing the file's 'Mime-Type'."
-    }
-} as {
-    [x: string]: {
-        title: Function | string,
-        subtitle: Function | string,
-        custom?: (disabled: boolean) => any
+        subtitle: "Fixes a long-lasting bug of Discord where JSON files couldn't be uploaded and sent properly.",
+        icon: "icon-qs-files"
     }
 };
 

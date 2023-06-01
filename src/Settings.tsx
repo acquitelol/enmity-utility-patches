@@ -1,17 +1,20 @@
 import { FormDivider, FormRow, FormSection, FormSwitch, ScrollView } from "enmity/components"
 import { React } from "enmity/metro/common"
-import { get, patchMap, set } from "./store"
+import { PatchType, get, patchMap, set } from "./store"
+import { getIDByName } from "enmity/api/assets"
 
 export default () => {
     return <ScrollView>
         <FormSection title="Preferences">
-            {Object.entries(patchMap).map(([patch, { title, subtitle, custom }], i, array) => {
-                const disabled = !get(patch);
+            {Object.entries(patchMap).map(([patch, value], index, array) => {
+                const { title, subtitle, icon, custom }: PatchType = value;
+                const disabled = !get(patch as keyof typeof patchMap);
 
                 return <>
                     <FormRow 
-                        label={typeof title === "function" ? title() : title}
-                        subLabel={typeof subtitle === "function" ? subtitle() : subtitle}
+                        label={title}
+                        subLabel={typeof subtitle === "function" ? subtitle?.() : subtitle}
+                        leading={icon && <FormRow.Icon source={getIDByName(icon)} />}
                         trailing={() => <FormSwitch
                             value={get(patch as keyof typeof patchMap)}
                             onValueChange={(value: boolean) => set(patch as keyof typeof patchMap, value)}
@@ -19,7 +22,7 @@ export default () => {
                         disabled={disabled}
                     />
                     {custom?.(disabled) ?? <></>}
-                    {i < (array.length - 1) && <FormDivider />}
+                    {index < (array.length - 1) && <FormDivider />}
                 </>
             })}
         </FormSection>

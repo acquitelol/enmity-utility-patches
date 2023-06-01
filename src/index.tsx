@@ -4,7 +4,7 @@ import { create } from 'enmity/patcher';
 import manifest from '../manifest.json';
 import { getByName, getByProps } from 'enmity/metro';
 import { findInReactTree } from 'enmity/utilities';
-import { React } from 'enmity/metro/common';
+import { React, Users } from 'enmity/metro/common';
 import { assignExisting, get, patchMap } from './store';
 import { get as _get } from 'enmity/api/settings';
 
@@ -16,6 +16,7 @@ const { getSettingTitle } = getByProps("getSettingTitle");
 const SettingsOverviewScreen = getByName("SettingsOverviewScreen", { default: false });
 const FilesManager = getByProps("addFiles", "popFirstFile");
 const MediaItemManager = getByProps("getNumMediaItemsPerRow");
+const Profile = getByProps("getUserProfile");
 
 const AddRoleDot: Plugin = {
     ...manifest,
@@ -25,7 +26,7 @@ const AddRoleDot: Plugin = {
 
         Patcher.before(DCDChatManager, "updateRows", (_, args) => {
             if (!get("roleDot")) return;
-            
+
             const rows = JSON.parse(args[1]);
 
             for (const row of rows) {
@@ -73,6 +74,11 @@ const AddRoleDot: Plugin = {
             args[0].files.forEach((file) => {
                 file.mimeType === "application/json" && (file.mimeType = "text/plain")
             })
+        })
+
+        Patcher.after(Profile, "getUserProfile", (_, args, res) => {
+            if (args[0] !== Users.getCurrentUser() || !get("pronouns")) return;
+            res.pronouns ||= _get(manifest.name, "pronouns", "unspecified");
         })
    },
 
