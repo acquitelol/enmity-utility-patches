@@ -2,7 +2,7 @@ import { Constants, Lodash, React, StyleSheet } from "enmity/metro/common";
 import { FormDivider, FormRow, FormSection, FormSwitch, ScrollView } from "enmity/components";
 import { getIDByName } from "enmity/api/assets";
 
-import { PatchType, get, set } from "./store";
+import { Patch, get, set } from "./store";
 import { sections } from "../patches";
 
 const styles = StyleSheet.createThemedStyleSheet({
@@ -37,7 +37,7 @@ export default () => {
                 uppercaseTitle={false}
             >
                 {Object.entries(patches).map(([name, value], index, array) => {
-                    const { title, subtitle, icon, render }: PatchType = value;
+                    const { title, subtitle, icon, render } = value;
     
                     return <>
                         <FormRow 

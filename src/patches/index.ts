@@ -1,4 +1,5 @@
 import { Patcher } from 'enmity/patcher';
+import { Section } from '../common/store';
 
 import roleDots from "./roleDots";
 import headerPrimary from "./headerPrimary";
@@ -7,7 +8,7 @@ import mediaItems from "./mediaItems";
 import jsonFix from "./jsonFix";
 import expandableSheet from "./expandableSheet";
 
-export const sections = {
+export const sections: Record<string, Section> = {
     recommended: {
         icon: "img_nitro_star",
         patches: {
