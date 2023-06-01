@@ -9,7 +9,15 @@ const styles = StyleSheet.createThemedStyleSheet({
     },
     section: {
         marginHorizontal: 16,
-        borderRadius: 12
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 1,
+            height: 4,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 4.65,
+        elevation: 8
     },
     icon: {
         width: 12,

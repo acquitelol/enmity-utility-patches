@@ -1,8 +1,8 @@
 import { getByName, getByProps, getModule } from 'enmity/metro';
 import { Constants, React, Theme } from 'enmity/metro/common';
 import manifest from '../../manifest.json';
-import { Serializable, get as _get, set as _set } from 'enmity/api/settings';
 import { FormInput, View } from 'enmity/components';
+import { Serializable, get as _get, set as _set } from 'enmity/api/settings';
 
 export const get = (prop: string, defaultValue?: Serializable) => _get(manifest.name, prop, defaultValue)
 export const set = (prop: string, value: Serializable) => _set(manifest.name, prop, value);
