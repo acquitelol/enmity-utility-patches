@@ -22,7 +22,7 @@ export const patchMap = {
     },
     headerPrimary: {
         title: "Fix Text Labels",
-        subtitle: "Forces all Text Labels use the 'text-normal' color instead of the default 'header-primary'.",
+        subtitle: "Forces all Text Labels to use the old 'text-normal' instead of the default 'header-primary'.",
         icon: "ic_add_text"
     },
     earlyPronouns: {
