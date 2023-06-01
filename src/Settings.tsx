@@ -8,7 +8,7 @@ export default () => {
         <FormSection title="Preferences">
             {Object.entries(patchMap).map(([patch, value], index, array) => {
                 const { title, subtitle, icon, custom }: PatchType = value;
-                const disabled = !(get(patch as keyof typeof patchMap) ?? true);
+                const disabled = !get(patch, true);
 
                 return <>
                     <FormRow 
@@ -16,8 +16,8 @@ export default () => {
                         subLabel={typeof subtitle === "function" ? subtitle?.() : subtitle}
                         leading={icon && <FormRow.Icon source={getIDByName(icon)} />}
                         trailing={() => <FormSwitch
-                            value={get(patch as keyof typeof patchMap) ?? true}
-                            onValueChange={(value: boolean) => set(patch as keyof typeof patchMap, value)}
+                            value={get(patch, true)}
+                            onValueChange={(value: boolean) => set(patch, value)}
                         />}
                         disabled={disabled}
                     />

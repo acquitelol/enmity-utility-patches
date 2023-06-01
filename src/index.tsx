@@ -5,7 +5,7 @@ import manifest from '../manifest.json';
 import { getByName, getByProps } from 'enmity/metro';
 import { findInReactTree } from 'enmity/utilities';
 import { React, Users } from 'enmity/metro/common';
-import { set, get, patchMap } from './store';
+import { get } from './store';
 
 const Patcher = create('utils');
 const { NativeModules: { DCDChatManager } } = getByProps("View", "Text", "NativeModules");
@@ -21,8 +21,6 @@ const AddRoleDot: Plugin = {
     ...manifest,
 
     onStart() {
-        Object.keys(patchMap).forEach(prop => (get(prop) === undefined) && set(prop, true));
-
         Patcher.before(DCDChatManager, "updateRows", (_, args) => {
             if (!get("roleDot")) return;
 
