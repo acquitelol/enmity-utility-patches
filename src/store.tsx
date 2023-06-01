@@ -38,6 +38,8 @@ export const patchMap = {
                 title="Pronouns"
                 value={_get(manifest.name, "pronouns", "unspecified")}
                 onChange={value => _set(manifest.name, "pronouns", value)}
+                disabled={disabled}
+                style={{ marginTop: -16 }}
             />
         }
     },

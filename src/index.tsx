@@ -77,7 +77,7 @@ const AddRoleDot: Plugin = {
         })
 
         Patcher.after(Profile, "getUserProfile", (_, args, res) => {
-            if (args[0] !== Users.getCurrentUser() || !get("pronouns")) return;
+            if (args[0] !== Users.getCurrentUser().id || !get("pronouns")) return;
             res.pronouns ||= _get(manifest.name, "pronouns", "unspecified");
         })
    },

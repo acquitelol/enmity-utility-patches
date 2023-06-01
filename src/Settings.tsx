@@ -8,7 +8,7 @@ export default () => {
         <FormSection title="Preferences">
             {Object.entries(patchMap).map(([patch, value], index, array) => {
                 const { title, subtitle, icon, custom }: PatchType = value;
-                const disabled = !get(patch as keyof typeof patchMap);
+                const disabled = !(get(patch as keyof typeof patchMap) ?? true);
 
                 return <>
                     <FormRow 
