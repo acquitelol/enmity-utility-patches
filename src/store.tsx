@@ -27,14 +27,14 @@ export const patchMap = {
     },
     earlyPronouns: {
         title: "Early Pronouns",
-        subtitle: () => `Set your own pronouns to ${get("pronouns", "unspecified")}. Keep in mind others will not be able to see this.`,
+        subtitle: () => `Set your own pronouns to ${get("pronouns", "")} early. Keep in mind others will not be able to see this.`,
         icon: "ic_accessibility_24px",
         custom: (disabled) => {
             return <FormInput 
                 placeholder="Your pronouns go here"
                 title="Pronouns"
-                value={get("pronouns", "unspecified")}
-                onChange={value => _set(manifest.name, "pronouns", value)}
+                value={get("pronouns", "")}
+                onChange={value => set("pronouns", value)}
                 disabled={disabled}
                 style={{ marginTop: -16 }}
             />
@@ -71,8 +71,7 @@ export const patchMap = {
                     minimumTrackTintColor={resolveSemanticColor(Theme.theme, HEADER_PRIMARY)}
                     maximumTrackTintColor={resolveSemanticColor(Theme.theme, BACKGROUND_PRIMARY)}
                     step={1}
-                    onValueChange={(value: number) => _set(manifest.name, "mediaItemsNumber", value)}
-                    key={"media-items-number"}
+                    onValueChange={(value: number) => set("mediaItemsNumber", value)}
                     disabled={disabled}
                     tapToSeek
                 />
