@@ -8,6 +8,7 @@ export default () => {
         <FormSection title="Preferences">
             {Object.entries(patchMap).map(([patch, value], index, array) => {
                 const { title, subtitle, icon, custom }: PatchType = value;
+                const [toggle, setToggle] = React.useState(get(patch, true));
                 const disabled = !get(patch, true);
 
                 return <>
@@ -16,8 +17,8 @@ export default () => {
                         subLabel={typeof subtitle === "function" ? subtitle?.() : subtitle}
                         leading={icon && <FormRow.Icon source={getIDByName(icon)} />}
                         trailing={() => <FormSwitch
-                            value={get(patch, true)}
-                            onValueChange={(value: boolean) => set(patch, value)}
+                            value={toggle}
+                            onValueChange={(value: boolean) => (set(patch, value), setToggle(value))}
                         />}
                         disabled={disabled}
                     />
