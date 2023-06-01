@@ -2,12 +2,10 @@ import { Plugin, registerPlugin } from 'enmity/managers/plugins';
 import Settings from "./common/settings";
 import { create } from 'enmity/patcher';
 import manifest from '../manifest.json';
-import { bulk, filters, getByName, getByProps } from 'enmity/metro';
+import { bulk, filters } from 'enmity/metro';
 import { findInReactTree } from 'enmity/utilities';
 import { React, Users } from 'enmity/metro/common';
 import { get } from './common/store';
-
-const Patcher = create('utils');
 
 const [
     // -- Role Dots --
@@ -29,7 +27,7 @@ const [
     FilesManager,
 
     // -- Never expand ActionSheet --
-    { default: ActionSheet }
+    { default: ActionSheet },
 ] = bulk(
     filters.byProps("View", "Text", "NativeModules"),
     filters.byName("FormLabel", false),
@@ -42,7 +40,9 @@ const [
     x => x?.default?.render?.name === "ActionSheet"
 )
 
-const AddRoleDot: Plugin = {
+const Patcher = create('utils');
+
+const UtilityPatches: Plugin = {
     ...manifest,
 
     onStart() {
@@ -109,9 +109,9 @@ const AddRoleDot: Plugin = {
         })
 
         // -- Never expand ActionSheet
-        Patcher.after(ActionSheet, "render", (_, args) => {
-            if (!get("neverExpand")) return;
-            args[0].startExpanded = false;
+        Patcher.before(ActionSheet, "render", (_, args) => {
+            if (!get("neverExpand") || !args[0].startExpanded) return;
+            args[0].startExpanded = get("shouldExpand", false);
         })
    },
 
@@ -124,4 +124,4 @@ const AddRoleDot: Plugin = {
     }
 };
 
-registerPlugin(AddRoleDot);
+registerPlugin(UtilityPatches);
