@@ -1,6 +1,6 @@
 import { getByName, getByProps, getModule } from 'enmity/metro';
 import { Constants, React, Theme } from 'enmity/metro/common';
-import manifest from '../manifest.json';
+import manifest from '../../manifest.json';
 import { Serializable, get as _get, set as _set } from 'enmity/api/settings';
 import { FormInput, View } from 'enmity/components';
 

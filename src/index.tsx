@@ -1,26 +1,48 @@
 import { Plugin, registerPlugin } from 'enmity/managers/plugins';
-import Settings from "./Settings";
+import Settings from "./common/settings";
 import { create } from 'enmity/patcher';
 import manifest from '../manifest.json';
-import { getByName, getByProps } from 'enmity/metro';
+import { bulk, filters, getByName, getByProps } from 'enmity/metro';
 import { findInReactTree } from 'enmity/utilities';
 import { React, Users } from 'enmity/metro/common';
-import { get } from './store';
+import { get } from './common/store';
 
 const Patcher = create('utils');
-const { NativeModules: { DCDChatManager } } = getByProps("View", "Text", "NativeModules");
-const FormLabel = getByName("FormLabel", { default: false });
-const { Text } = getByProps("TextStyleSheet");
-const { getSettingTitle } = getByProps("getSettingTitle");
-const SettingsOverviewScreen = getByName("SettingsOverviewScreen", { default: false });
-const FilesManager = getByProps("addFiles", "popFirstFile");
-const MediaItemManager = getByProps("getNumMediaItemsPerRow");
-const Profile = getByProps("getUserProfile");
+
+const [
+    // -- Role Dots --
+    { NativeModules: { DCDChatManager } },
+
+    // -- Text Labels --
+    FormLabel,
+    { Text },
+    { getSettingTitle },
+    SettingsOverviewScreen,
+
+    // -- Pronouns --
+    Profile,
+
+    // -- Media items per row --
+    MediaItemManager,
+
+    // -- JSON Uploading fix --
+    FilesManager
+] = bulk(
+    filters.byProps("View", "Text", "NativeModules"),
+    filters.byName("FormLabel", false),
+    filters.byProps("TextStyleSheet"),
+    filters.byProps("getSettingTitle"),
+    filters.byName("SettingsOverviewScreen", false),
+    filters.byProps("getUserProfile"),
+    filters.byProps("getNumMediaItemsPerRow"),
+    filters.byProps("addFiles", "popFirstFile")
+)
 
 const AddRoleDot: Plugin = {
     ...manifest,
 
     onStart() {
+        // -- Role Dots --
         Patcher.before(DCDChatManager, "updateRows", (_, args) => {
             if (!get("roleDot")) return;
 
@@ -36,6 +58,7 @@ const AddRoleDot: Plugin = {
             args[1] = JSON.stringify(rows);
         });
 
+        // -- Text Labels --
         Patcher.after(FormLabel, "default", (_, __, res) => {
             if (!get("headerPrimary")) return;
 
@@ -61,21 +84,24 @@ const AddRoleDot: Plugin = {
             })
         });
 
+        // -- Pronouns --
+        Patcher.after(Profile, "getUserProfile", (_, args, res) => {
+            if (args[0] !== Users.getCurrentUser().id || !get("pronouns")) return;
+            res.pronouns ||= get("pronouns", "unspecified");
+        })
+
+        // -- Media items per row --
         Patcher.instead(MediaItemManager, "getNumMediaItemsPerRow", (self, args, orig) => get("mediaItems") 
             ? get("mediaItemsNumber", 2)
             : orig.apply(self, args));
 
+        // -- JSON Uploading fix --
         Patcher.after(FilesManager, "addFiles", (_, args) => {
             if (!get("jsonFix")) return;
 
             args[0].files.forEach((file) => {
                 file.mimeType === "application/json" && (file.mimeType = "text/plain")
             })
-        })
-
-        Patcher.after(Profile, "getUserProfile", (_, args, res) => {
-            if (args[0] !== Users.getCurrentUser().id || !get("pronouns")) return;
-            res.pronouns ||= get("pronouns", "unspecified");
         })
    },
 
