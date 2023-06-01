@@ -6,6 +6,7 @@ import { getByName, getByProps } from 'enmity/metro';
 import { findInReactTree } from 'enmity/utilities';
 import { React } from 'enmity/metro/common';
 import { assignExisting, get, patchMap } from './store';
+import { get as _get } from 'enmity/api/settings';
 
 const Patcher = create('utils');
 const { NativeModules: { DCDChatManager } } = getByProps("View", "Text", "NativeModules");
@@ -24,6 +25,7 @@ const AddRoleDot: Plugin = {
 
         Patcher.before(DCDChatManager, "updateRows", (_, args) => {
             if (!get("roleDot")) return;
+            
             const rows = JSON.parse(args[1]);
 
             for (const row of rows) {
@@ -38,6 +40,7 @@ const AddRoleDot: Plugin = {
 
         Patcher.after(FormLabel, "default", (_, __, res) => {
             if (!get("headerPrimary")) return;
+
             res.props.color = "text-normal";
         })
 
@@ -60,9 +63,13 @@ const AddRoleDot: Plugin = {
             })
         });
 
-        Patcher.instead(MediaItemManager, "getNumMediaItemsPerRow", (self, args, orig) => get("mediaItems") ? 2 : orig.apply(self, args));
+        Patcher.instead(MediaItemManager, "getNumMediaItemsPerRow", (self, args, orig) => get("mediaItems") 
+            ? _get(manifest.name, "mediaItemsNumber", 2)
+            : orig.apply(self, args));
+
         Patcher.after(FilesManager, "addFiles", (_, args) => {
             if (!get("jsonFix")) return;
+
             args[0].files.forEach((file) => {
                 file.mimeType === "application/json" && (file.mimeType = "text/plain")
             })
