@@ -83,5 +83,10 @@ export const patchMap = {
         title: "Upload JSON Files",
         subtitle: "Fixes a long-lasting bug of Discord where JSON files couldn't be uploaded and sent properly.",
         icon: "icon-qs-files"
+    },
+    neverExpand: {
+        title: "Never expand ActionSheets",
+        subtitle: "Always render any ActionSheets (such as User Profiles, Messages, etc) as non-expanded.",
+        icon: "ic_expand_more_24px"
     }
 };

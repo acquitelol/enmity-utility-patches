@@ -26,7 +26,10 @@ const [
     MediaItemManager,
 
     // -- JSON Uploading fix --
-    FilesManager
+    FilesManager,
+
+    // -- Never expand ActionSheet --
+    { default: ActionSheet }
 ] = bulk(
     filters.byProps("View", "Text", "NativeModules"),
     filters.byName("FormLabel", false),
@@ -35,7 +38,8 @@ const [
     filters.byName("SettingsOverviewScreen", false),
     filters.byProps("getUserProfile"),
     filters.byProps("getNumMediaItemsPerRow"),
-    filters.byProps("addFiles", "popFirstFile")
+    filters.byProps("addFiles", "popFirstFile"),
+    x => x?.default?.render?.name === "ActionSheet"
 )
 
 const AddRoleDot: Plugin = {
@@ -86,7 +90,7 @@ const AddRoleDot: Plugin = {
 
         // -- Pronouns --
         Patcher.after(Profile, "getUserProfile", (_, args, res) => {
-            if (args[0] !== Users.getCurrentUser().id || !get("pronouns", "")) return;
+            if (args[0] !== Users.getCurrentUser().id || !get("pronouns", "") || !res) return;
             res.pronouns ||= get("pronouns", "");
         })
 
@@ -102,6 +106,12 @@ const AddRoleDot: Plugin = {
             args[0].files.forEach((file) => {
                 file.mimeType === "application/json" && (file.mimeType = "text/plain")
             })
+        })
+
+        // -- Never expand ActionSheet
+        Patcher.after(ActionSheet, "render", (_, args) => {
+            if (!get("neverExpand")) return;
+            args[0].startExpanded = false;
         })
    },
 
