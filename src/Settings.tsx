@@ -6,21 +6,19 @@ export default () => {
     return <ScrollView>
         <FormSection title="Preferences">
             {Object.entries(patchMap).map(([patch, { title, subtitle, custom }], i, array) => {
-                const [customState, setCustomState] = React.useState({});
                 const disabled = !get(patch);
-                const customWithState = custom?.(customState, setCustomState, disabled) ?? <></>;
 
                 return <>
                     <FormRow 
-                        label={typeof title == "function" ? title(customState, setCustomState) : title}
-                        subLabel={typeof subtitle == "function" ? subtitle(customState, setCustomState) : subtitle}
+                        label={typeof title === "function" ? title() : title}
+                        subLabel={typeof subtitle === "function" ? subtitle() : subtitle}
                         trailing={() => <FormSwitch
                             value={get(patch as keyof typeof patchMap)}
                             onValueChange={(value: boolean) => set(patch as keyof typeof patchMap, value)}
                         />}
                         disabled={disabled}
                     />
-                    {customWithState}
+                    {custom?.(disabled) ?? <></>}
                     {i < (array.length - 1) && <FormDivider />}
                 </>
             })}

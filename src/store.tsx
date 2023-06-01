@@ -21,8 +21,8 @@ export const patchMap = {
     },
     mediaItems: {
         title: "Media Items",
-        subtitle: (state) => `Changes the amount of media items per row to '${state.value ?? _get(manifest.name, "mediaItemsNumber", 2)}' instead of the default '3' in new Media Picker experiment.`,
-        custom: (state, setState, disabled) => {
+        subtitle: () => `Changes the amount of media items per row to '${_get(manifest.name, "mediaItemsNumber", 2)}' instead of the default '3' in new Media Picker experiment.`,
+        custom: (disabled) => {
             const SliderComponent = getModule(x => x.render.name === "SliderComponent");
             const FormLabel = getByName("FormLabel");
 
@@ -37,23 +37,22 @@ export const patchMap = {
             />
 
             const minimum = 1;
-            const maximum = 10;
+            const maximum = 8;
 
             return <View style={{ alignItems: "center", flexDirection: "row" }}>
                 {renderLabel(minimum, "Left")}
                 <SliderComponent 
-                    value={state.value ?? _get(manifest.name, "mediaItemsNumber", 2)}
+                    value={_get(manifest.name, "mediaItemsNumber", 2)}
                     minimumValue={minimum}
                     maximumValue={maximum}
                     style={{ marginHorizontal: 16, flex: 1 }}
                     minimumTrackTintColor={resolveSemanticColor(Theme.theme, HEADER_PRIMARY)}
                     maximumTrackTintColor={resolveSemanticColor(Theme.theme, BACKGROUND_PRIMARY)}
                     step={1}
-                    onValueChange={(value: number) => (
-                        setState(prev => ({ ...prev, value })), 
-                        _set(manifest.name, "mediaItemsNumber", value)
-                    )}
+                    onValueChange={(value: number) => _set(manifest.name, "mediaItemsNumber", value)}
+                    key={"media-items-number"}
                     disabled={disabled}
+                    tapToSeek
                 />
                 {renderLabel(maximum, "Right")}
             </View>
@@ -65,9 +64,9 @@ export const patchMap = {
     }
 } as {
     [x: string]: {
-        title: ((state: any, setState: () => any) => string) | string,
-        subtitle: ((state: any, setState: () => any) => string) | string,
-        custom?: (state: any, setState: Function, disabled: boolean) => any
+        title: Function | string,
+        subtitle: Function | string,
+        custom?: (disabled: boolean) => any
     }
 };
 
