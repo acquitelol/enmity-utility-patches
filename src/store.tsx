@@ -28,10 +28,10 @@ export const patchMap = {
 
             const { meta: { resolveSemanticColor } } = getByProps("colors", "meta");
             const { ThemeColorMap: { HEADER_PRIMARY, BACKGROUND_PRIMARY } } = Constants;
-            const renderLabel = (text: number | string, direction: "Left" | "Right") => <FormLabel 
+            const renderLabel = (text: number | string) => <FormLabel 
                 text={text} 
                 style={{ 
-                    [`margin${direction}`]: 16,
+                    marginHorizontal: 16,
                     opacity: disabled ? 0.5 : 1
                 }}
             />
@@ -40,12 +40,12 @@ export const patchMap = {
             const maximum = 8;
 
             return <View style={{ alignItems: "center", flexDirection: "row" }}>
-                {renderLabel(minimum, "Left")}
+                {renderLabel(minimum)}
                 <SliderComponent 
                     value={_get(manifest.name, "mediaItemsNumber", 2)}
                     minimumValue={minimum}
                     maximumValue={maximum}
-                    style={{ marginHorizontal: 16, flex: 1 }}
+                    style={{ flex: 1 }}
                     minimumTrackTintColor={resolveSemanticColor(Theme.theme, HEADER_PRIMARY)}
                     maximumTrackTintColor={resolveSemanticColor(Theme.theme, BACKGROUND_PRIMARY)}
                     step={1}
@@ -54,7 +54,7 @@ export const patchMap = {
                     disabled={disabled}
                     tapToSeek
                 />
-                {renderLabel(maximum, "Right")}
+                {renderLabel(maximum)}
             </View>
         }
     },
