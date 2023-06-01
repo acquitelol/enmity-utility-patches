@@ -26,7 +26,7 @@ const [
     // -- JSON Uploading fix --
     FilesManager,
 
-    // -- Never expand ActionSheet --
+    // -- Allow actionsheet expansion to be chosen --
     { default: ActionSheet },
 ] = bulk(
     filters.byProps("View", "Text", "NativeModules"),
@@ -108,7 +108,7 @@ const UtilityPatches: Plugin = {
             })
         })
 
-        // -- Never expand ActionSheet
+        // -- Allow actionsheet expansion to be chosen --
         Patcher.before(ActionSheet, "render", (_, args) => {
             if (!get("expandableSheet") || !args[0].startExpanded) return;
             args[0].startExpanded = get("shouldExpand", false);

@@ -95,7 +95,7 @@ export const patchMap = {
         icon: () => get("shouldExpand", false) ? "ic_chevron_up_24px" : "ic_chevron_down_24px",
         custom: (disabled: boolean) => {
             const { BadgableTabBar } = getByProps("BadgableTabBar");
-            const [activeTab, setActiveTab] = React.useState(String(get("shouldExpand", false)));
+            const [activeTab, setActiveTab] = React.useState(String(!!get("shouldExpand", false)));
             const tabs = [
                 {
                     id: "false",
