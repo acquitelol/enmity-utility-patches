@@ -11,7 +11,7 @@ export type PatchType = {
     title: (() => string) | string;
     subtitle: (() => string) | string;
     icon?: (() => string) | string;
-    initCustom?: (disabled: boolean) => () => any
+    custom?: (disabled: boolean) => any
 }
 
 export const patchMap = {
@@ -29,8 +29,8 @@ export const patchMap = {
         title: "Early Pronouns",
         subtitle: () => `Set your own pronouns to ${get("pronouns", "")} early. Keep in mind others will not be able to see this.`,
         icon: "ic_accessibility_24px",
-        initCustom: (disabled: boolean) => {
-            return () => <FormInput 
+        custom: (disabled: boolean) => {
+            return <FormInput 
                 placeholder="Your pronouns go here"
                 title="Pronouns"
                 value={get("pronouns", "")}
@@ -44,7 +44,7 @@ export const patchMap = {
         title: "Media Items",
         subtitle: () => `Changes the amount of media items per row in media picker to '${get("mediaItemsNumber", 2)}' instead of the default '3'.`,
         icon: "ic_image",
-        initCustom: (disabled: boolean) => {
+        custom: (disabled: boolean) => {
             const SliderComponent = getModule(x => x.render.name === "SliderComponent");
             const FormLabel = getByName("FormLabel");
 
@@ -61,7 +61,7 @@ export const patchMap = {
             const minimum = 1;
             const maximum = 8;
 
-            return () => <View 
+            return <View 
                 style={{ 
                     alignItems: "center", 
                     flexDirection: "row" 
@@ -93,8 +93,9 @@ export const patchMap = {
         title: "Expandable ActionSheets",
         subtitle: () => `Forces any User-Profile Action Sheets to always initially render as ${get("shouldExpand", false) ? "" : "non-"}expanded.`,
         icon: () => get("shouldExpand", false) ? "ic_chevron_up_24px" : "ic_chevron_down_24px",
-        initCustom: (disabled: boolean) => {
+        custom: (disabled: boolean) => {
             const { BadgableTabBar } = getByProps("BadgableTabBar");
+            const [activeTab, setActiveTab] = React.useState(String(get("shouldExpand", false)));
             const tabs = [
                 {
                     id: "false",
@@ -106,23 +107,19 @@ export const patchMap = {
                 }
             ]
 
-            return () => {
-                const [activeTab, setActiveTab] = React.useState(String(get("shouldExpand", false)));
-
-                return <View 
-                    style={{
-                        opacity: disabled ? 0.5 : 1,
-                        marginHorizontal: 16,
-                        marginBottom: 12
-                    }}
-                >
-                    <BadgableTabBar
-                        tabs={tabs}
-                        activeTab={activeTab}
-                        onTabSelected={(tab: string) => !disabled && (set("shouldExpand", JSON.parse(tab)), setActiveTab(tab))}
-                    />
-                </View>
-            }
+            return <View 
+                style={{
+                    opacity: disabled ? 0.5 : 1,
+                    marginHorizontal: 16,
+                    marginBottom: 12
+                }}
+            >
+                <BadgableTabBar
+                    tabs={tabs}
+                    activeTab={activeTab}
+                    onTabSelected={(tab: string) => !disabled && (set("shouldExpand", JSON.parse(tab)), setActiveTab(tab))}
+                />
+            </View>
         }
     }
 };

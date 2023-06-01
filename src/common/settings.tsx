@@ -34,8 +34,7 @@ export default () => {
             uppercaseTitle={false}
         >
             {Object.entries(patchMap).map(([patch, value], index, array) => {
-                const { title, subtitle, icon, initCustom }: PatchType = value;
-                const Custom = initCustom?.(!get(patch, true)) ?? (() => <></>);
+                const { title, subtitle, icon, custom }: PatchType = value;
 
                 return <>
                     <FormRow 
@@ -48,7 +47,7 @@ export default () => {
                         />}
                         disabled={!get(patch, true)}
                     />
-                    <Custom />
+                    {custom?.(!get(patch, true)) ?? <></>}
                     {index < (array.length - 1) && <FormDivider />}
                 </>
             })}
