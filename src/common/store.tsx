@@ -89,9 +89,9 @@ export const patchMap = {
         subtitle: "Fixes a long-lasting bug of Discord where JSON files couldn't be sent properly.",
         icon: "icon-qs-files"
     },
-    neverExpand: {
+    expandableSheet: {
         title: "Expandable ActionSheets",
-        subtitle: () => `Always render any User-Profile Action Sheets as ${get("shouldExpand", false) ? "" : "non-"}expanded.`,
+        subtitle: () => `Forces any User-Profile Action Sheets to always initially render as ${get("shouldExpand", false) ? "" : "non-"}expanded.`,
         icon: () => get("shouldExpand", false) ? "ic_chevron_up_24px" : "ic_chevron_down_24px",
         initCustom: (disabled: boolean) => {
             const { BadgableTabBar } = getByProps("BadgableTabBar");

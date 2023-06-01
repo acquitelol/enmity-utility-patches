@@ -110,7 +110,7 @@ const UtilityPatches: Plugin = {
 
         // -- Never expand ActionSheet
         Patcher.before(ActionSheet, "render", (_, args) => {
-            if (!get("neverExpand") || !args[0].startExpanded) return;
+            if (!get("expandableSheet") || !args[0].startExpanded) return;
             args[0].startExpanded = get("shouldExpand", false);
         })
    },
