@@ -1,6 +1,6 @@
 {
     "name": "UtilityPatches",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "description": "Minor patches/fixes all bundled into a single plugin for convenience.",
     "color": "#ff0069",
     "authors": [{

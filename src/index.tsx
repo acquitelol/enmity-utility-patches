@@ -86,8 +86,8 @@ const AddRoleDot: Plugin = {
 
         // -- Pronouns --
         Patcher.after(Profile, "getUserProfile", (_, args, res) => {
-            if (args[0] !== Users.getCurrentUser().id || !get("pronouns")) return;
-            res.pronouns ||= get("pronouns", "unspecified");
+            if (args[0] !== Users.getCurrentUser().id || !get("pronouns", "")) return;
+            res.pronouns ||= get("pronouns", "");
         })
 
         // -- Media items per row --

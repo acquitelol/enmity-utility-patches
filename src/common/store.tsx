@@ -29,12 +29,12 @@ export const patchMap = {
         title: "Early Pronouns",
         subtitle: () => `Set your own pronouns to ${get("pronouns", "")} early. Keep in mind others will not be able to see this.`,
         icon: "ic_accessibility_24px",
-        custom: (disabled) => {
+        custom: (disabled: boolean) => {
             return <FormInput 
                 placeholder="Your pronouns go here"
                 title="Pronouns"
                 value={get("pronouns", "")}
-                onChange={value => set("pronouns", value)}
+                onChange={(value: string) => set("pronouns", value)}
                 disabled={disabled}
                 style={{ marginTop: -16 }}
             />
@@ -44,7 +44,7 @@ export const patchMap = {
         title: "Media Items",
         subtitle: () => `Changes the amount of media items per row in media picker to '${get("mediaItemsNumber", 2)}' instead of the default '3'.`,
         icon: "ic_image",
-        custom: (disabled) => {
+        custom: (disabled: boolean) => {
             const SliderComponent = getModule(x => x.render.name === "SliderComponent");
             const FormLabel = getByName("FormLabel");
 
