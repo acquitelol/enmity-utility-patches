@@ -6,6 +6,7 @@ import headerPrimary from "./headerPrimary";
 import earlyPronouns from "./earlyPronouns";
 import mediaItems from "./mediaItems";
 import jsonFix from "./jsonFix";
+import toastFix from "./toastFix";
 import expandableSheet from "./expandableSheet";
 
 export const sections: Record<string, Section> = {
@@ -14,6 +15,7 @@ export const sections: Record<string, Section> = {
         patches: {
             headerPrimary,
             jsonFix,
+            toastFix,
             mediaItems
         }
     },

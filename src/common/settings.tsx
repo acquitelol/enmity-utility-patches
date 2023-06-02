@@ -1,8 +1,8 @@
 import { Constants, Lodash, React, StyleSheet } from "enmity/metro/common";
-import { FormDivider, FormRow, FormSection, FormSwitch, ScrollView } from "enmity/components";
+import { FormDivider, FormRow, FormSection, FormSwitch, ScrollView, View } from "enmity/components";
 import { getIDByName } from "enmity/api/assets";
 
-import { Patch, get, set } from "./store";
+import { get, set } from "./store";
 import { sections } from "../patches";
 
 const styles = StyleSheet.createThemedStyleSheet({
@@ -56,5 +56,6 @@ export default () => {
                 })}
             </FormSection>
         })}
+        <View style={{ marginBottom: 50 }} />
     </ScrollView>
 };
