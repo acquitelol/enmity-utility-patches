@@ -15,14 +15,14 @@ export const sections: Record<string, Section> = {
         patches: {
             headerPrimary,
             jsonFix,
-            toastFix,
-            mediaItems
+            toastFix
         }
     },
     preferences: {
         icon: "ic_pencil_24px",
         patches: {
             roleDots,
+            mediaItems,
             earlyPronouns,
             expandableSheet
         }
@@ -36,7 +36,7 @@ export const patchAll = (Patcher: Patcher) => Object.values(sections)
                 try {
                     value.patch(Patcher);
                 } catch (e) {
-                    console.error(`Patch ${value.key} errored with error ${e.message ?? e}`);
+                    console.error(`Patch '${value.title}' (${value.key}) errored with '${e.message ?? e}'.`);
                 };
             });
     });

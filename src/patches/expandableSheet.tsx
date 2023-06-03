@@ -45,7 +45,10 @@ export default {
             <BadgableTabBar
                 tabs={tabs}
                 activeTab={activeTab}
-                onTabSelected={(tab: string) => !disabled && (set("shouldExpand", JSON.parse(tab)), setActiveTab(tab))}
+                onTabSelected={(tab: string) => !disabled && (
+                    set("shouldExpand", JSON.parse(tab)), 
+                    setActiveTab(tab)
+                )}
             />
         </View>;
     }

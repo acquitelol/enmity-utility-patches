@@ -13,8 +13,8 @@ export default {
         Patcher.before(Toasts, "open", (_, args) => {
             if (!get(this.key)) return;
 
-            args[0].source && (args[0].icon = args[0].source);
-            !args[0].key && (args[0].key = Math.random().toString());
+            args[0].source && (args[0].icon = args[0].source, delete args[0].source);
+            args[0].key ||= Math.random().toString()
         });
     }
 };
